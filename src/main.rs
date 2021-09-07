@@ -8,6 +8,10 @@ fn main() {
     }
 
     if let Some(m) = m.subcommand_matches("add") {
-        println!("Adding todo: {}", m.value_of("content").unwrap());
+        add_content(m.value_of("content").unwrap());
     }
+}
+
+fn add_content(content: &str) {
+    println!("Adding todo: {}", content);
 }
