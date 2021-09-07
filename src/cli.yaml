@@ -1,0 +1,13 @@
+name: todo_txt
+version: "0.1"
+author: Kazuaki Nomura <nkz0914ssk@gmail.com>
+about: cli tool to manage todo.txt
+subcommands:
+    - add:
+        about: add todo
+        args:
+            - content:
+                index: 1
+                value_name: TODO
+                required: true
+                about: "What you have to do"
