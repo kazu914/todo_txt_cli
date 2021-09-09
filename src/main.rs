@@ -1,3 +1,4 @@
+mod repository;
 use clap::{load_yaml, App};
 
 fn main() {
@@ -13,5 +14,8 @@ fn main() {
 }
 
 fn add_content(content: &str) {
-    println!("Adding todo: {}", content);
+    let file = repository::TodoFile::new("todo.txt");
+    file.append(content);
+    let contents = file.read();
+    print!("{:?}", contents);
 }
