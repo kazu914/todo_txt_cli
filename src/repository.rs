@@ -51,4 +51,20 @@ impl TodoFile {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::path::Path;
+
+    #[test]
+    fn test_all() {
+        let path = "test.txt";
+        let file = TodoFile::new(path);
+        let contents = vec!["test1", "test2"];
+        file.overwrite(&contents);
+        assert!(Path::new(path).exists());
+        assert_eq!(contents, file.read());
+        let _ = remove_file(path);
+    }
 }
