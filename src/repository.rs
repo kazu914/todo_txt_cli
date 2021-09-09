@@ -1,5 +1,5 @@
 use std::{
-    fs::OpenOptions,
+    fs::{remove_file, OpenOptions},
     io::{prelude::*, BufReader},
     process,
 };
@@ -43,4 +43,12 @@ impl TodoFile {
             .map(|l| l.expect("Error: Couldn't parse line"))
             .collect()
     }
+
+    pub fn overwrite(&self, contents: &Vec<&str>) {
+        let _ = remove_file(&self.path);
+        for content in contents {
+            self.append(content);
+        }
+    }
+}
 }
