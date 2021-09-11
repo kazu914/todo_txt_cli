@@ -83,8 +83,7 @@ mod tests {
             let priority: Option<&str> = None;
             let projects: Option<Vec<String>> = None;
             let contexts: Option<Vec<String>> = None;
-            let todo: super::Todo =
-                super::Todo::new(content, creation_date, priority, projects, contexts);
+            let todo = super::Todo::new(content, creation_date, priority, projects, contexts);
             assert_eq!(todo.to_formatted_string(), "content")
         }
 
@@ -95,8 +94,7 @@ mod tests {
             let priority: Option<&str> = Some("A");
             let projects: Option<Vec<String>> = None;
             let contexts: Option<Vec<String>> = None;
-            let todo: super::Todo =
-                super::Todo::new(content, creation_date, priority, projects, contexts);
+            let todo = super::Todo::new(content, creation_date, priority, projects, contexts);
             assert_eq!(todo.to_formatted_string(), "(A) content")
         }
 
@@ -107,8 +105,7 @@ mod tests {
             let priority: Option<&str> = None;
             let projects: Option<Vec<String>> = None;
             let contexts: Option<Vec<String>> = None;
-            let todo: super::Todo =
-                super::Todo::new(content, creation_date, priority, projects, contexts);
+            let todo = super::Todo::new(content, creation_date, priority, projects, contexts);
             assert_eq!(todo.to_formatted_string(), "2000-1-1 content")
         }
 
@@ -119,8 +116,7 @@ mod tests {
             let priority: Option<&str> = Some("A");
             let projects: Option<Vec<String>> = None;
             let contexts: Option<Vec<String>> = None;
-            let todo: super::Todo =
-                super::Todo::new(content, creation_date, priority, projects, contexts);
+            let todo = super::Todo::new(content, creation_date, priority, projects, contexts);
             assert_eq!(todo.to_formatted_string(), "(A) 2000-1-1 content")
         }
 
@@ -132,8 +128,7 @@ mod tests {
             let projects: Option<Vec<String>> =
                 Some(vec!["projectA".to_string(), "projectB".to_string()]);
             let contexts: Option<Vec<String>> = None;
-            let todo: super::Todo =
-                super::Todo::new(content, creation_date, priority, projects, contexts);
+            let todo = super::Todo::new(content, creation_date, priority, projects, contexts);
             assert_eq!(todo.to_formatted_string(), "content +projectA +projectB")
         }
 
@@ -146,8 +141,7 @@ mod tests {
             let contexts: Option<Vec<String>> =
                 Some(vec!["contextA".to_string(), "contextB".to_string()]);
 
-            let todo: super::Todo =
-                super::Todo::new(content, creation_date, priority, projects, contexts);
+            let todo = super::Todo::new(content, creation_date, priority, projects, contexts);
             assert_eq!(todo.to_formatted_string(), "content @contextA @contextB")
         }
 
@@ -161,8 +155,7 @@ mod tests {
             let contexts: Option<Vec<String>> =
                 Some(vec!["contextA".to_string(), "contextB".to_string()]);
 
-            let todo: super::Todo =
-                super::Todo::new(content, creation_date, priority, projects, contexts);
+            let todo = super::Todo::new(content, creation_date, priority, projects, contexts);
             assert_eq!(
                 todo.to_formatted_string(),
                 "content +projectA +projectB @contextA @contextB"
@@ -179,8 +172,7 @@ mod tests {
             let contexts: Option<Vec<String>> =
                 Some(vec!["contextA".to_string(), "contextB".to_string()]);
 
-            let todo: super::Todo =
-                super::Todo::new(content, creation_date, priority, projects, contexts);
+            let todo = super::Todo::new(content, creation_date, priority, projects, contexts);
             assert_eq!(
                 todo.to_formatted_string(),
                 "(A) 2000-1-1 content +projectA +projectB @contextA @contextB"
@@ -197,8 +189,7 @@ mod tests {
             let contexts: Option<Vec<String>> =
                 Some(vec!["contextA".to_string(), "contextB".to_string()]);
 
-            let mut todo: super::Todo =
-                super::Todo::new(content, creation_date, priority, projects, contexts);
+            let mut todo = super::Todo::new(content, creation_date, priority, projects, contexts);
             todo.complete("2000-1-2");
 
             assert_eq!(
