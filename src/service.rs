@@ -1,11 +1,8 @@
+use super::constants::add_flags::*;
 use super::helper::get_today;
 use super::model::Todo;
 use super::repository::TodoFile;
 use clap::ArgMatches;
-const CONTENT: &str = "content";
-const PRIORITY: &str = "priority";
-const PROJECTS: &str = "projects";
-const CONTEXTS: &str = "contexts";
 
 pub struct TodoService {
     file: TodoFile,
