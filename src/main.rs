@@ -7,6 +7,7 @@ fn main() {
     let service = TodoService::new("todo.txt");
 
     if let Some(m) = m.subcommand_matches("add") {
-        service.add_todo(m);
+        let todo_string = service.add_todo(m);
+        println!("Created: {:?}", todo_string);
     }
 }

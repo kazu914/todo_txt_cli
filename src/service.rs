@@ -17,13 +17,16 @@ impl TodoService {
             file: TodoFile::new(path),
         }
     }
-    pub fn add_todo(&self, matches: &ArgMatches) {
+    pub fn add_todo(&self, matches: &ArgMatches) -> String {
         let content: &str = matches.value_of(CONTENT).unwrap();
         let creation_date: String = get_today();
         let priority: Option<&str> = matches.value_of(PRIORITY);
         let projects: Option<Vec<String>> = matches.values_of_t(PROJECTS).ok();
         let contexts: Option<Vec<String>> = matches.values_of_t(CONTEXTS).ok();
         let todo = Todo::new(content, Some(creation_date), priority, projects, contexts);
-        &self.file.append(&todo.to_formatted_string());
+
+        let todo_string = todo.to_formatted_string();
+        &self.file.append(&todo_string);
+        todo_string
     }
 }
