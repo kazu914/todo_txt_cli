@@ -1,4 +1,6 @@
 pub struct Todo {
+    is_completed: bool,
+    completion_date: Option<String>,
     pub content: String,
     pub creation_date: Option<String>,
     pub priority: Option<String>,
@@ -15,6 +17,8 @@ impl Todo {
         contexts: Option<Vec<impl Into<String>>>,
     ) -> Todo {
         Todo {
+            is_completed: false,
+            completion_date: None,
             content: content.into(),
             priority: priority.map(Into::into),
             creation_date: creation_date.map(Into::into),
