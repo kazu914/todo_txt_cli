@@ -26,3 +26,10 @@ subcommands:
                 takes_value: true
                 multiple_values: true
                 multiple_occurrences: true
+            - context:
+                short: C
+                long: context
+                about: Specify related project
+                takes_value: true
+                multiple_values: true
+                multiple_occurrences: true
