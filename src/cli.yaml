@@ -11,3 +11,25 @@ subcommands:
                 value_name: TODO
                 required: true
                 about: "What you have to do"
+            - priority:
+                short: p
+                long: priority
+                about: Specify the priority
+                takes_value: true
+                validator_regex:
+                  - ^[A-Z]$
+                  - Priority must be between A(high) and Z(low)
+            - projects:
+                short: P
+                long: projects
+                about: Specify related project
+                takes_value: true
+                multiple_values: true
+                multiple_occurrences: true
+            - contexts:
+                short: C
+                long: contexts
+                about: Specify related project
+                takes_value: true
+                multiple_values: true
+                multiple_occurrences: true
