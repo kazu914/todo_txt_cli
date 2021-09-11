@@ -1,11 +1,11 @@
 pub struct Todo {
     is_completed: bool,
     completion_date: Option<String>,
-    pub content: String,
-    pub creation_date: Option<String>,
-    pub priority: Option<String>,
-    pub projects: Option<Vec<String>>,
-    pub contexts: Option<Vec<String>>,
+    content: String,
+    creation_date: Option<String>,
+    priority: Option<String>,
+    projects: Option<Vec<String>>,
+    contexts: Option<Vec<String>>,
 }
 
 impl Todo {
