@@ -19,16 +19,16 @@ subcommands:
                 validator_regex:
                   - ^[A-Z]$
                   - Priority must be between A(high) and Z(low)
-            - project:
+            - projects:
                 short: P
-                long: project
+                long: projects
                 about: Specify related project
                 takes_value: true
                 multiple_values: true
                 multiple_occurrences: true
-            - context:
+            - contexts:
                 short: C
-                long: context
+                long: contexts
                 about: Specify related project
                 takes_value: true
                 multiple_values: true
