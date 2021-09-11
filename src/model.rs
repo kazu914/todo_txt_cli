@@ -56,6 +56,11 @@ impl Todo {
 
         res
     }
+
+    pub fn complete(&mut self, completion_date: impl Into<String>) {
+        self.is_completed = true;
+        self.completion_date = Some(completion_date.into());
+    }
 }
 
 #[cfg(test)]
@@ -172,6 +177,21 @@ mod tests {
                 todo.to_formatted_string(),
                 "(A) 2000-1-1 content +projectA +projectB @contextA @contextB"
             )
+        }
+    }
+
+    mod complete {
+        #[test]
+        fn complete() {
+            let content: &str = "content";
+            let creation_date: Option<&str> = None;
+            let priority: Option<&str> = None;
+            let projects: Option<Vec<String>> = None;
+            let contexts: Option<Vec<String>> = None;
+            let mut todo = super::Todo::new(content, creation_date, priority, projects, contexts);
+            todo.complete("2000-1-2");
+            assert!(todo.is_completed);
+            assert_eq!(todo.completion_date, Some("2000-1-2".to_string()));
         }
     }
 }
