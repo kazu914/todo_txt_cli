@@ -19,4 +19,17 @@ impl Todo {
             contexts: contexts.into_iter().map(|context| context.into()).collect(),
         }
     }
+
+    pub fn to_formatted_string(&self) -> String {
+        let mut res: String = "(".to_string() + &self.priority.clone() + ")";
+        res += &(" ".to_string() + &self.content.clone());
+        for project in &self.projects {
+            res += &(" +".to_string() + &project.to_string())
+        }
+        for context in &self.contexts {
+            res += &(" @".to_string() + &context.to_string())
+        }
+
+        return res;
+    }
 }

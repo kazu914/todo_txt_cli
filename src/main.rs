@@ -7,6 +7,6 @@ fn main() {
     let service = TodoService::new("todo.txt");
 
     if let Some(m) = m.subcommand_matches("add") {
-        service.add_todo(m.value_of("content").unwrap());
+        service.add_todo(m);
     }
 }
