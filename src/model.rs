@@ -32,8 +32,16 @@ impl Todo {
     pub fn to_formatted_string(&self) -> String {
         let mut res: String = "".to_string();
 
+        if self.is_completed {
+            res += &"x "
+        }
+
         if let Some(priority) = &self.priority {
             res += &("(".to_string() + &priority.to_string() + ") ");
+        }
+
+        if let Some(completion_date) = &self.completion_date {
+            res += &(completion_date.to_string() + " ");
         }
 
         if let Some(creation_date) = &self.creation_date {
@@ -176,6 +184,26 @@ mod tests {
             assert_eq!(
                 todo.to_formatted_string(),
                 "(A) 2000-1-1 content +projectA +projectB @contextA @contextB"
+            )
+        }
+
+        #[test]
+        fn complete_priority_creation_date_content_projects_contexts() {
+            let content: &str = "content";
+            let creation_date: Option<&str> = Some("2000-1-1");
+            let priority: Option<&str> = Some("A");
+            let projects: Option<Vec<String>> =
+                Some(vec!["projectA".to_string(), "projectB".to_string()]);
+            let contexts: Option<Vec<String>> =
+                Some(vec!["contextA".to_string(), "contextB".to_string()]);
+
+            let mut todo: super::Todo =
+                super::Todo::new(content, creation_date, priority, projects, contexts);
+            todo.complete("2000-1-2");
+
+            assert_eq!(
+                todo.to_formatted_string(),
+                "x (A) 2000-1-2 2000-1-1 content +projectA +projectB @contextA @contextB"
             )
         }
     }
