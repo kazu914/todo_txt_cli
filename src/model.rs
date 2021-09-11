@@ -69,6 +69,21 @@ impl Todo {
         self.is_completed = true;
         self.completion_date = Some(completion_date.into());
     }
+
+    pub fn from_formatted_string(formatted_string: &str) -> Todo {
+        let vec: Vec<&str> = formatted_string.split_whitespace().collect();
+        let priority = vec[0];
+        let content = vec[1];
+        Todo {
+            is_completed: false,
+            completion_date: None,
+            content: content.to_string(),
+            priority: Some(priority.to_string()),
+            creation_date: None,
+            projects: None,
+            contexts: None,
+        }
+    }
 }
 
 #[cfg(test)]
@@ -211,6 +226,23 @@ mod tests {
             todo.complete("2000-1-2");
             assert!(todo.is_completed);
             assert_eq!(todo.completion_date, Some("2000-1-2".to_string()));
+        }
+    }
+
+    mod from_formatted_string {
+        #[test]
+        fn from_content() {
+            let formatted_string = "todo test";
+            let todo = super::Todo::from_formatted_string(formatted_string);
+            assert_eq!(todo.content, "todo test");
+        }
+
+        #[test]
+        fn from_priority_content() {
+            let formatted_string = "(A) todo test";
+            let todo = super::Todo::from_formatted_string(formatted_string);
+            assert_eq!(todo.priority, Some("A".to_string()));
+            assert_eq!(todo.content, "todo test");
         }
     }
 }
