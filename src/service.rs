@@ -1,8 +1,10 @@
 use super::constants::add_flags::*;
+use super::constants::done_flags::*;
 use super::helper::get_today;
 use super::model::Todo;
 use super::repository::TodoFile;
 use clap::ArgMatches;
+use std::process;
 
 pub struct TodoService {
     file: TodoFile,
@@ -25,5 +27,24 @@ impl TodoService {
         let todo_string = todo.to_formatted_string();
         &self.file.append(&todo_string);
         todo_string
+    }
+
+    pub fn complete_todo(&self, matches: &ArgMatches) -> String {
+        let key: usize = matches.value_of_t(KEY).unwrap_or_else(|_| {
+            println!("Error: Key should be integer");
+            process::exit(1);
+        });
+        let mut lines = self.file.read();
+        let todo_string = lines.get(key);
+        if todo_string.is_none() {
+            println!("Error: Couldn't find todo with key: {}", key);
+            process::exit(1);
+        }
+        let mut todo = Todo::from_formatted_string(todo_string.unwrap());
+        todo.complete(get_today());
+        lines[key] = todo.to_formatted_string();
+        self.file
+            .overwrite(&lines.iter().map(String::as_str).collect());
+        todo.to_formatted_string()
     }
 }
