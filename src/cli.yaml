@@ -33,3 +33,15 @@ subcommands:
                 takes_value: true
                 multiple_values: true
                 multiple_occurrences: true
+    - done:
+        about: complete todo
+        args:
+            - key:
+                index: 1
+                value_name: ITEM_KEY
+                required: true
+                about: "the todo key to complete"
+            - date:
+                long: date
+                about: Specify the completion date
+                takes_value: true

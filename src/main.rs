@@ -11,4 +11,9 @@ fn main() {
         let todo_string = service.add_todo(m);
         println!("Created: {:?}", todo_string);
     }
+
+    if let Some(m) = m.subcommand_matches(DONE) {
+        let todo_string = service.complete_todo(m);
+        println!("Completed: {:?}", todo_string);
+    }
 }
