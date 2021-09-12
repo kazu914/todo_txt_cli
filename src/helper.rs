@@ -15,6 +15,11 @@ pub fn is_project(target: &str) -> bool {
     re.is_match(target)
 }
 
+pub fn is_context(target: &str) -> bool {
+    let re = Regex::new(r"^@").unwrap();
+    re.is_match(target)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -62,6 +67,20 @@ mod tests {
         fn not_project() {
             let target = "project";
             assert!(!super::is_project(target));
+        }
+    }
+
+    mod is_context {
+        #[test]
+        fn project() {
+            let target = "@context";
+            assert!(super::is_context(target));
+        }
+
+        #[test]
+        fn not_project() {
+            let target = "context";
+            assert!(!super::is_context(target));
         }
     }
 }
