@@ -10,6 +10,11 @@ pub fn is_valid_date(target: &str) -> bool {
     re.is_match(target)
 }
 
+pub fn is_project(target: &str) -> bool {
+    let re = Regex::new(r"^\+").unwrap();
+    re.is_match(target)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -43,6 +48,20 @@ mod tests {
         fn unmatch_2000_01_001() {
             let target = "2000-01-001";
             assert!(!super::is_valid_date(target));
+        }
+    }
+
+    mod is_project {
+        #[test]
+        fn project() {
+            let target = "+project";
+            assert!(super::is_project(target));
+        }
+
+        #[test]
+        fn not_project() {
+            let target = "project";
+            assert!(!super::is_project(target));
         }
     }
 }
