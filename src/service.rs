@@ -1,6 +1,6 @@
 use super::constants::add_flags::*;
 use super::constants::done_flags::*;
-use super::helper::get_today;
+use super::helper::{get_today, is_valid_date};
 use super::model::Todo;
 use super::repository::TodoFile;
 use clap::ArgMatches;
@@ -40,8 +40,16 @@ impl TodoService {
             println!("Error: Couldn't find todo with key: {}", key);
             process::exit(1);
         }
+        let completion_date: String = matches.value_of_t(DATE).unwrap_or_else(|_| get_today());
+        if !is_valid_date(&completion_date) {
+            println!(
+                "Error: {} is invalid date format (YYYY-MM-DD)",
+                completion_date
+            );
+            process::exit(1);
+        }
         let mut todo = Todo::from_formatted_string(todo_string.unwrap());
-        todo.complete(get_today());
+        todo.complete(completion_date.as_str());
         lines[key] = todo.to_formatted_string();
         self.file
             .overwrite(&lines.iter().map(String::as_str).collect());

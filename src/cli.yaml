@@ -41,3 +41,7 @@ subcommands:
                 value_name: ITEM_KEY
                 required: true
                 about: "the todo key to complete"
+            - date:
+                long: date
+                about: Specify the completion date
+                takes_value: true
