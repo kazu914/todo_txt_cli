@@ -55,4 +55,11 @@ impl TodoService {
             .overwrite(&lines.iter().map(String::as_str).collect());
         todo.to_formatted_string()
     }
+
+    pub fn list_todos(&self) {
+        let todos = self.file.read();
+        for (i, todo) in todos.iter().enumerate() {
+            println!("{}: {}", i, todo);
+        }
+    }
 }
