@@ -45,3 +45,5 @@ subcommands:
                 long: date
                 about: Specify the completion date
                 takes_value: true
+    - list:
+        about: list todos
