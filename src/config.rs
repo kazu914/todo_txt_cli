@@ -1,7 +1,7 @@
 use directories::ProjectDirs;
 use serde::{Deserialize, Serialize};
 use shellexpand;
-use std::{fs::OpenOptions, io::BufReader, io::Error, process};
+use std::{fs, fs::OpenOptions, io::BufReader, io::Error, process};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Config {
@@ -11,6 +11,7 @@ pub struct Config {
 impl Config {
     pub fn new() -> Config {
         let project_dirs = ProjectDirs::from("", "", "todo_txt").unwrap();
+        let _ = fs::create_dir_all(project_dirs.config_dir());
         Config::read_config(&project_dirs).unwrap_or(Config {
             default_file_name: project_dirs
                 .config_dir()
