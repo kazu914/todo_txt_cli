@@ -1,5 +1,6 @@
 use directories::ProjectDirs;
 use serde::{Deserialize, Serialize};
+use shellexpand;
 use std::{fs::OpenOptions, io::BufReader, io::Error, process};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -27,11 +28,18 @@ impl Config {
             .write(true)
             .open(config_path.clone())?;
         let reader = BufReader::new(config_file);
-        let config = serde_json::from_reader(reader).unwrap_or_else(|e| {
+        let mut config: Config = serde_json::from_reader(reader).unwrap_or_else(|e| {
             println!("Error: {:?} is not valid config json file.", config_path);
             println!("  {}", e);
             process::exit(1)
         });
+        config.default_file_name = shellexpand::full(&config.default_file_name)
+            .unwrap_or_else(|e| {
+                println!("Error: {:?} is not valid config json file.", config_path);
+                println!("  {}", e);
+                process::exit(1)
+            })
+            .to_string();
         Ok(config)
     }
 }
