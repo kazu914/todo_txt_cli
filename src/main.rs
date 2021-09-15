@@ -1,11 +1,13 @@
 use clap::{load_yaml, App};
+use todo_txt::config::Config;
 use todo_txt::constants::subcommands::*;
 use todo_txt::service::TodoService;
 
 fn main() {
+    let config = Config::new();
     let yaml = load_yaml!("cli.yaml");
     let m = App::from(yaml).get_matches();
-    let service = TodoService::new("todo.txt");
+    let service = TodoService::new(&config.default_file_name);
 
     if let Some(m) = m.subcommand_matches(ADD) {
         let todo_string = service.add_todo(m);
