@@ -140,6 +140,41 @@ impl Todo {
             contexts,
         }
     }
+
+    pub fn to_table_format(&self) -> Vec<String> {
+        let is_copleted_string = if self.is_completed {
+            "x".to_string()
+        } else {
+            "-".to_string()
+        };
+
+        let priority_string = self.priority.clone().unwrap_or("-".to_string());
+        let completion_date_string = self.completion_date.clone().unwrap_or("-".to_string());
+        let creation_date_string = self.creation_date.clone().unwrap_or("-".to_string());
+
+        let projects_string = self
+            .projects
+            .clone()
+            .unwrap_or(vec!["-".to_string()])
+            .join(" ");
+        let contexts_string = self
+            .contexts
+            .clone()
+            .unwrap_or(vec!["-".to_string()])
+            .join(" ");
+
+        let content_string = self.content.clone().to_string();
+
+        vec![
+            is_copleted_string,
+            priority_string,
+            completion_date_string,
+            creation_date_string,
+            projects_string,
+            contexts_string,
+            content_string,
+        ]
+    }
 }
 
 #[cfg(test)]
@@ -391,6 +426,22 @@ mod tests {
                 todo.contexts,
                 Some(vec!["contextA".to_string(), "contextB".to_string()])
             );
+        }
+    }
+
+    mod to_table_format {
+        #[test]
+        fn to_table() {
+            let formatted_string = "todo text +projectA +projectB @contextA @contextB";
+            let todo = super::Todo::from_formatted_string(formatted_string);
+            let table_format: Vec<String> = vec![
+                "-".to_string(),
+                "".to_string(),
+                "projectA projectB".to_string(),
+                "contextA contextB".to_string(),
+                "todo text".to_string(),
+            ];
+            assert_eq!(todo.to_table_format(), table_format);
         }
     }
 }
