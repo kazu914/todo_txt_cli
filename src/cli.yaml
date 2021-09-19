@@ -63,3 +63,5 @@ subcommands:
                     - default
                     - table
                 default_value: default
+    - show_config:
+        about: "[experimental] show config"
