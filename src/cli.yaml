@@ -2,6 +2,13 @@ name: todo_txt
 version: "0.1"
 author: Kazuaki Nomura <nkz0914ssk@gmail.com>
 about: cli tool to manage todo.txt
+args:
+    - file:
+       short: f
+       long: file
+       value_name: FILE
+       about: Specify the todo.txt file path
+       takes_value: true
 subcommands:
     - add:
         about: add todo
