@@ -22,4 +22,8 @@ fn main() {
     if let Some(m) = m.subcommand_matches(LIST) {
         service.list_todos(m);
     }
+
+    if let Some(_) = m.subcommand_matches(CONFIG) {
+        println!("{}", config);
+    }
 }

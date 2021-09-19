@@ -1,7 +1,7 @@
 use directories::ProjectDirs;
 use serde::{Deserialize, Serialize};
 use shellexpand;
-use std::{fs, fs::OpenOptions, io::BufReader, io::Error, process};
+use std::{fmt, fs, fs::OpenOptions, io::BufReader, io::Error, process};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Config {
@@ -42,5 +42,11 @@ impl Config {
             })
             .to_string();
         Ok(config)
+    }
+}
+
+impl fmt::Display for Config {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "default_file_name: {}", self.default_file_name)
     }
 }
