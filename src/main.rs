@@ -19,7 +19,7 @@ fn main() {
         println!("Completed: {:?}", todo_string);
     }
 
-    if let Some(_) = m.subcommand_matches(LIST) {
-        service.list_todos();
+    if let Some(m) = m.subcommand_matches(LIST) {
+        service.list_todos(m);
     }
 }

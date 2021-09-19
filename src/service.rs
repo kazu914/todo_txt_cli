@@ -1,9 +1,11 @@
 use super::constants::add_flags::*;
 use super::constants::done_flags::*;
+use super::constants::list_flags::*;
 use super::helper::{get_today, is_valid_date};
 use super::model::Todo;
 use super::repository::TodoFile;
 use clap::ArgMatches;
+use cli_table::{print_stdout, Cell, Style, Table};
 use std::process;
 
 pub struct TodoService {
@@ -48,7 +50,7 @@ impl TodoService {
             );
             process::exit(1);
         }
-        let mut todo = Todo::from_formatted_string(todo_string.unwrap());
+        let mut todo = Todo::from_formatted_string(todo_string.unwrap(), Some(key));
         todo.complete(completion_date.as_str());
         lines[key] = todo.to_formatted_string();
         self.file
@@ -56,10 +58,42 @@ impl TodoService {
         todo.to_formatted_string()
     }
 
-    pub fn list_todos(&self) {
+    pub fn list_todos(&self, matches: &ArgMatches) {
         let todos = self.file.read();
-        for (i, todo) in todos.iter().enumerate() {
-            println!("{}: {}", i, todo);
+        match matches.value_of(FORMAT).unwrap_or_default() {
+            "table" => {
+                let todo_list: Vec<Todo> = todos
+                    .iter()
+                    .enumerate()
+                    .map(|(index, todo)| Todo::from_formatted_string(todo, Some(index)))
+                    .collect();
+
+                let table_formats: Vec<Vec<String>> = todo_list
+                    .iter()
+                    .map(|todo| todo.to_table_format())
+                    .collect();
+
+                let table = table_formats
+                    .table()
+                    .title(vec![
+                        "key".cell().bold(true),
+                        "completed?".cell().bold(true),
+                        "priority".cell().bold(true),
+                        "completion date".cell().bold(true),
+                        "creation date".cell().bold(true),
+                        "projects".cell().bold(true),
+                        "contexts".cell().bold(true),
+                        "content".cell().bold(true),
+                    ])
+                    .bold(true);
+                let _ = print_stdout(table);
+            }
+            _ => {
+                let todos = self.file.read();
+                for (i, todo) in todos.iter().enumerate() {
+                    println!("{}: {}", i, todo);
+                }
+            }
         }
     }
 }

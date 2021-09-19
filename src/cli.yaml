@@ -47,3 +47,12 @@ subcommands:
                 takes_value: true
     - list:
         about: list todos
+        args:
+            - format:
+                long: format
+                about: Specify output format
+                takes_value: true
+                possible_values:
+                    - default
+                    - table
+                default_value: default
