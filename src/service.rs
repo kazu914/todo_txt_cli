@@ -50,7 +50,7 @@ impl TodoService {
             );
             process::exit(1);
         }
-        let mut todo = Todo::from_formatted_string(todo_string.unwrap());
+        let mut todo = Todo::from_formatted_string(todo_string.unwrap(), Some(key));
         todo.complete(completion_date.as_str());
         lines[key] = todo.to_formatted_string();
         self.file
@@ -59,12 +59,13 @@ impl TodoService {
     }
 
     pub fn list_todos(&self, matches: &ArgMatches) {
+        let todos = self.file.read();
         match matches.value_of(FORMAT).unwrap_or_default() {
             "table" => {
-                let todos = self.file.read();
                 let todo_list: Vec<Todo> = todos
                     .iter()
-                    .map(|todo| Todo::from_formatted_string(todo))
+                    .enumerate()
+                    .map(|(index, todo)| Todo::from_formatted_string(todo, Some(index)))
                     .collect();
 
                 let table_formats: Vec<Vec<String>> = todo_list
@@ -75,6 +76,7 @@ impl TodoService {
                 let table = table_formats
                     .table()
                     .title(vec![
+                        "key".cell().bold(true),
                         "completed?".cell().bold(true),
                         "priority".cell().bold(true),
                         "completion date".cell().bold(true),

@@ -1,6 +1,7 @@
 use super::helper::{is_context, is_project, is_valid_date};
 
 pub struct Todo {
+    key: Option<usize>,
     is_completed: bool,
     completion_date: Option<String>,
     content: String,
@@ -19,6 +20,7 @@ impl Todo {
         contexts: Option<Vec<impl Into<String>>>,
     ) -> Todo {
         Todo {
+            key: None,
             is_completed: false,
             completion_date: None,
             content: content.into(),
@@ -72,7 +74,7 @@ impl Todo {
         self.completion_date = Some(completion_date.into());
     }
 
-    pub fn from_formatted_string(formatted_string: &str) -> Todo {
+    pub fn from_formatted_string(formatted_string: &str, key: Option<usize>) -> Todo {
         let mut is_completed: bool = false;
         let mut priority: Option<String> = None;
         let mut completion_date: Option<String> = None;
@@ -131,6 +133,7 @@ impl Todo {
         }
 
         Todo {
+            key,
             is_completed,
             completion_date,
             content,
@@ -142,6 +145,11 @@ impl Todo {
     }
 
     pub fn to_table_format(&self) -> Vec<String> {
+        let key = if self.key.is_some() {
+            self.key.unwrap().to_string()
+        } else {
+            "-".to_string()
+        };
         let is_copleted_string = if self.is_completed {
             "x".to_string()
         } else {
@@ -166,6 +174,7 @@ impl Todo {
         let content_string = self.content.clone().to_string();
 
         vec![
+            key,
             is_copleted_string,
             priority_string,
             completion_date_string,
@@ -324,14 +333,14 @@ mod tests {
         #[test]
         fn from_flag() {
             let formatted_string = "x todo text";
-            let todo = super::Todo::from_formatted_string(formatted_string);
+            let todo = super::Todo::from_formatted_string(formatted_string, None);
             assert!(todo.is_completed);
         }
 
         #[test]
         fn from_priority() {
             let formatted_string = "(A) todo text";
-            let todo = super::Todo::from_formatted_string(formatted_string);
+            let todo = super::Todo::from_formatted_string(formatted_string, None);
             assert!(!todo.is_completed);
             assert_eq!(todo.priority, Some("A".to_string()));
             assert_eq!(todo.content, "todo text".to_string());
@@ -340,7 +349,7 @@ mod tests {
         #[test]
         fn from_flag_priority() {
             let formatted_string = "x (A) todo text";
-            let todo = super::Todo::from_formatted_string(formatted_string);
+            let todo = super::Todo::from_formatted_string(formatted_string, None);
             assert!(todo.is_completed);
             assert_eq!(todo.priority, Some("A".to_string()));
             assert_eq!(todo.content, "todo text".to_string());
@@ -349,7 +358,7 @@ mod tests {
         #[test]
         fn from_priority_creation_date() {
             let formatted_string = "(A) 2000-1-1 todo text";
-            let todo = super::Todo::from_formatted_string(formatted_string);
+            let todo = super::Todo::from_formatted_string(formatted_string, None);
             assert!(!todo.is_completed);
             assert_eq!(todo.priority, Some("A".to_string()));
             assert_eq!(todo.completion_date, None);
@@ -360,7 +369,7 @@ mod tests {
         #[test]
         fn from_flag_priority_completion_date() {
             let formatted_string = "x (A) 2000-1-1 todo text";
-            let todo = super::Todo::from_formatted_string(formatted_string);
+            let todo = super::Todo::from_formatted_string(formatted_string, None);
             assert!(todo.is_completed);
             assert_eq!(todo.priority, Some("A".to_string()));
             assert_eq!(todo.completion_date, Some("2000-1-1".to_string()));
@@ -371,7 +380,7 @@ mod tests {
         #[test]
         fn from_flag_priority_completion_date_creation_date() {
             let formatted_string = "x (A) 2000-1-1 1999-12-31 todo text";
-            let todo = super::Todo::from_formatted_string(formatted_string);
+            let todo = super::Todo::from_formatted_string(formatted_string, None);
             assert!(todo.is_completed);
             assert_eq!(todo.priority, Some("A".to_string()));
             assert_eq!(todo.completion_date, Some("2000-1-1".to_string()));
@@ -382,7 +391,7 @@ mod tests {
         #[test]
         fn from_content_projects() {
             let formatted_string = "todo text +projectA +projectB";
-            let todo = super::Todo::from_formatted_string(formatted_string);
+            let todo = super::Todo::from_formatted_string(formatted_string, None);
             assert!(!todo.is_completed);
             assert_eq!(todo.priority, None);
             assert_eq!(todo.completion_date, None);
@@ -397,7 +406,7 @@ mod tests {
         #[test]
         fn from_content_contexts() {
             let formatted_string = "todo text @contextA @contextB";
-            let todo = super::Todo::from_formatted_string(formatted_string);
+            let todo = super::Todo::from_formatted_string(formatted_string, None);
             assert!(!todo.is_completed);
             assert_eq!(todo.priority, None);
             assert_eq!(todo.completion_date, None);
@@ -412,7 +421,7 @@ mod tests {
         #[test]
         fn from_content_projects_contexts() {
             let formatted_string = "todo text +projectA +projectB @contextA @contextB";
-            let todo = super::Todo::from_formatted_string(formatted_string);
+            let todo = super::Todo::from_formatted_string(formatted_string, None);
             assert!(!todo.is_completed);
             assert_eq!(todo.priority, None);
             assert_eq!(todo.completion_date, None);
@@ -433,7 +442,7 @@ mod tests {
         #[test]
         fn to_table() {
             let formatted_string = "todo text +projectA +projectB @contextA @contextB";
-            let todo = super::Todo::from_formatted_string(formatted_string);
+            let todo = super::Todo::from_formatted_string(formatted_string, None);
             let table_format: Vec<String> = vec![
                 "-".to_string(),
                 "".to_string(),
