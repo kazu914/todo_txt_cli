@@ -60,14 +60,14 @@ impl TodoService {
 
     pub fn list_todos(&self, matches: &ArgMatches) {
         let todos = self.file.read();
+        let todo_list: Vec<Todo> = todos
+            .iter()
+            .enumerate()
+            .map(|(index, todo)| Todo::from_formatted_string(todo, Some(index)))
+            .collect();
+
         match matches.value_of(FORMAT).unwrap_or_default() {
             "table" => {
-                let todo_list: Vec<Todo> = todos
-                    .iter()
-                    .enumerate()
-                    .map(|(index, todo)| Todo::from_formatted_string(todo, Some(index)))
-                    .collect();
-
                 let table_formats: Vec<Vec<String>> = todo_list
                     .iter()
                     .map(|todo| todo.to_table_format())
@@ -89,9 +89,8 @@ impl TodoService {
                 let _ = print_stdout(table);
             }
             _ => {
-                let todos = self.file.read();
-                for (i, todo) in todos.iter().enumerate() {
-                    println!("{}: {}", i, todo);
+                for (i, todo) in todo_list.iter().enumerate() {
+                    println!("{}: {}", i, todo.to_formatted_string());
                 }
             }
         }
