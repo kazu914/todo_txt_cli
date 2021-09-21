@@ -37,7 +37,7 @@ impl Todo {
         let mut res: String = "".to_string();
 
         if self.is_completed {
-            res += &"x "
+            res += "x "
         }
 
         if let Some(priority) = &self.priority {
@@ -62,7 +62,7 @@ impl Todo {
 
         if let Some(contexts) = &self.contexts {
             for context in contexts {
-                res += &(" @".to_string() + &context)
+                res += &(" @".to_string() + context)
             }
         }
 
@@ -90,7 +90,7 @@ impl Todo {
             value = iter.next().unwrap();
         }
 
-        if value.starts_with("(") {
+        if value.starts_with('(') {
             priority = Some(value.chars().nth(1).unwrap().to_string());
             value = iter.next().unwrap();
         }
@@ -102,12 +102,10 @@ impl Todo {
                 value = iter.next().unwrap();
                 completion_date = date1;
                 creation_date = date2;
+            } else if is_completed {
+                completion_date = date1;
             } else {
-                if is_completed {
-                    completion_date = date1;
-                } else {
-                    creation_date = date1;
-                }
+                creation_date = date1;
             }
         }
 
@@ -171,7 +169,7 @@ impl Todo {
             .unwrap_or(vec!["-".to_string()])
             .join(" ");
 
-        let content_string = self.content.clone().to_string();
+        let content_string = self.content.clone();
 
         vec![
             key,

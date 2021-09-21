@@ -27,7 +27,7 @@ impl TodoService {
         let todo = Todo::new(content, Some(creation_date), priority, projects, contexts);
 
         let todo_string = todo.to_formatted_string();
-        &self.file.append(&todo_string);
+        let _ = self.file.append(&todo_string);
         todo_string
     }
 
