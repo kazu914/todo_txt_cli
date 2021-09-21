@@ -50,3 +50,9 @@ impl fmt::Display for Config {
         write!(f, "default_file_name: {}", self.default_file_name)
     }
 }
+
+impl Default for Config {
+    fn default() -> Self {
+        Config::new()
+    }
+}

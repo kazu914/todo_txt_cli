@@ -154,19 +154,25 @@ impl Todo {
             "-".to_string()
         };
 
-        let priority_string = self.priority.clone().unwrap_or("-".to_string());
-        let completion_date_string = self.completion_date.clone().unwrap_or("-".to_string());
-        let creation_date_string = self.creation_date.clone().unwrap_or("-".to_string());
+        let priority_string = self.priority.clone().unwrap_or_else(|| "-".to_string());
+        let completion_date_string = self
+            .completion_date
+            .clone()
+            .unwrap_or_else(|| "-".to_string());
+        let creation_date_string = self
+            .creation_date
+            .clone()
+            .unwrap_or_else(|| "-".to_string());
 
         let projects_string = self
             .projects
             .clone()
-            .unwrap_or(vec!["-".to_string()])
+            .unwrap_or_else(|| vec!["-".to_string()])
             .join(" ");
         let contexts_string = self
             .contexts
             .clone()
-            .unwrap_or(vec!["-".to_string()])
+            .unwrap_or_else(|| vec!["-".to_string()])
             .join(" ");
 
         let content_string = self.content.clone();
