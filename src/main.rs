@@ -23,7 +23,7 @@ fn main() {
         service.list_todos(m);
     }
 
-    if let Some(_) = m.subcommand_matches(CONFIG) {
+    if m.subcommand_matches(CONFIG).is_some() {
         println!("{}", config);
     }
 }

@@ -27,7 +27,7 @@ impl TodoService {
         let todo = Todo::new(content, Some(creation_date), priority, projects, contexts);
 
         let todo_string = todo.to_formatted_string();
-        &self.file.append(&todo_string);
+        let _ = self.file.append(&todo_string);
         todo_string
     }
 
@@ -53,8 +53,13 @@ impl TodoService {
         let mut todo = Todo::from_formatted_string(todo_string.unwrap(), Some(key));
         todo.complete(completion_date.as_str());
         lines[key] = todo.to_formatted_string();
-        self.file
-            .overwrite(&lines.iter().map(String::as_str).collect());
+        self.file.overwrite(
+            lines
+                .iter()
+                .map(AsRef::as_ref)
+                .collect::<Vec<&str>>()
+                .as_ref(),
+        );
         todo.to_formatted_string()
     }
 
