@@ -445,7 +445,10 @@ mod tests {
             let todo = super::Todo::from_formatted_string(formatted_string, None);
             let table_format: Vec<String> = vec![
                 "-".to_string(),
-                "".to_string(),
+                "-".to_string(),
+                "-".to_string(),
+                "-".to_string(),
+                "-".to_string(),
                 "projectA projectB".to_string(),
                 "contextA contextB".to_string(),
                 "todo text".to_string(),
