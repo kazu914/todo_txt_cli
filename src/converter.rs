@@ -69,7 +69,7 @@ impl Converter {
         todo.set_contexts(contexts);
         todo
     }
-    pub fn to_formatted_string(todo: Todo) -> String {
+    pub fn to_formatted_string(todo: &Todo) -> String {
         let mut res: String = "".to_string();
 
         if *todo.is_completed() {
@@ -117,7 +117,7 @@ mod tests {
             let projects: Option<String> = None;
             let contexts: Option<String> = None;
             let todo = super::Todo::new(content, creation_date, priority, projects, contexts);
-            assert_eq!(super::Converter::to_formatted_string(todo), "content")
+            assert_eq!(super::Converter::to_formatted_string(&todo), "content")
         }
 
         #[test]
@@ -128,7 +128,7 @@ mod tests {
             let projects: Option<String> = None;
             let contexts: Option<String> = None;
             let todo = super::Todo::new(content, creation_date, priority, projects, contexts);
-            assert_eq!(super::Converter::to_formatted_string(todo), "(A) content")
+            assert_eq!(super::Converter::to_formatted_string(&todo), "(A) content")
         }
 
         #[test]
@@ -140,7 +140,7 @@ mod tests {
             let contexts: Option<String> = None;
             let todo = super::Todo::new(content, creation_date, priority, projects, contexts);
             assert_eq!(
-                super::Converter::to_formatted_string(todo),
+                super::Converter::to_formatted_string(&todo),
                 "2000-1-1 content"
             )
         }
@@ -154,7 +154,7 @@ mod tests {
             let contexts: Option<String> = None;
             let todo = super::Todo::new(content, creation_date, priority, projects, contexts);
             assert_eq!(
-                super::Converter::to_formatted_string(todo),
+                super::Converter::to_formatted_string(&todo),
                 "(A) 2000-1-1 content"
             )
         }
@@ -168,7 +168,7 @@ mod tests {
             let contexts: Option<String> = None;
             let todo = super::Todo::new(content, creation_date, priority, projects, contexts);
             assert_eq!(
-                super::Converter::to_formatted_string(todo),
+                super::Converter::to_formatted_string(&todo),
                 "content +projectA +projectB"
             )
         }
@@ -183,7 +183,7 @@ mod tests {
 
             let todo = super::Todo::new(content, creation_date, priority, projects, contexts);
             assert_eq!(
-                super::Converter::to_formatted_string(todo),
+                super::Converter::to_formatted_string(&todo),
                 "content @contextA @contextB"
             )
         }
@@ -198,7 +198,7 @@ mod tests {
 
             let todo = super::Todo::new(content, creation_date, priority, projects, contexts);
             assert_eq!(
-                super::Converter::to_formatted_string(todo),
+                super::Converter::to_formatted_string(&todo),
                 "content +projectA +projectB @contextA @contextB"
             )
         }
@@ -213,7 +213,7 @@ mod tests {
 
             let todo = super::Todo::new(content, creation_date, priority, projects, contexts);
             assert_eq!(
-                super::Converter::to_formatted_string(todo),
+                super::Converter::to_formatted_string(&todo),
                 "(A) 2000-1-1 content +projectA +projectB @contextA @contextB"
             )
         }
@@ -230,7 +230,7 @@ mod tests {
             todo.complete("2000-1-2");
 
             assert_eq!(
-                super::Converter::to_formatted_string(todo),
+                super::Converter::to_formatted_string(&todo),
                 "x (A) 2000-1-2 2000-1-1 content +projectA +projectB @contextA @contextB"
             )
         }

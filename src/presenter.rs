@@ -1,3 +1,4 @@
+use super::converter::Converter;
 use super::model::Todo;
 use cli_table::{print_stdout, Cell, Style, Table};
 pub struct Presenter {
@@ -11,7 +12,7 @@ impl Presenter {
 
     pub fn print(&self) {
         for (i, todo) in self.todos.iter().enumerate() {
-            println!("{}: {}", i, todo.to_formatted_string());
+            println!("{}: {}", i, Converter::to_formatted_string(todo));
         }
     }
 

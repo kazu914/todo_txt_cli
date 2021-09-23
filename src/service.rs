@@ -27,7 +27,7 @@ impl TodoService {
         let contexts: Option<String> = matches.value_of_t(CONTEXTS).ok();
         let todo = Todo::new(content, Some(creation_date), priority, projects, contexts);
 
-        let todo_string = todo.to_formatted_string();
+        let todo_string = Converter::to_formatted_string(&todo);
         let _ = self.file.append(&todo_string);
         todo_string
     }
@@ -53,7 +53,7 @@ impl TodoService {
         }
         let mut todo = Converter::from_formatted_string(todo_string.unwrap(), Some(key));
         todo.complete(completion_date.as_str());
-        lines[key] = todo.to_formatted_string();
+        lines[key] = Converter::to_formatted_string(&todo);
         self.file.overwrite(
             lines
                 .iter()
@@ -61,7 +61,7 @@ impl TodoService {
                 .collect::<Vec<&str>>()
                 .as_ref(),
         );
-        todo.to_formatted_string()
+        Converter::to_formatted_string(&todo)
     }
 
     pub fn list_todos(&self, matches: &ArgMatches) {
