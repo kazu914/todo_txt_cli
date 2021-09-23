@@ -3,9 +3,9 @@ use super::constants::done_flags::*;
 use super::constants::list_flags::*;
 use super::helper::{get_today, is_valid_date};
 use super::model::Todo;
+use super::presenter::Presenter;
 use super::repository::TodoFile;
 use clap::ArgMatches;
-use cli_table::{print_stdout, Cell, Style, Table};
 use std::process;
 
 pub struct TodoService {
@@ -70,33 +70,14 @@ impl TodoService {
             .enumerate()
             .map(|(index, todo)| Todo::from_formatted_string(todo, Some(index)))
             .collect();
+        let presenter = Presenter::new(todo_list);
 
         match matches.value_of(FORMAT).unwrap_or_default() {
             "table" => {
-                let table_formats: Vec<Vec<String>> = todo_list
-                    .iter()
-                    .map(|todo| todo.to_table_format())
-                    .collect();
-
-                let table = table_formats
-                    .table()
-                    .title(vec![
-                        "key".cell().bold(true),
-                        "completed?".cell().bold(true),
-                        "priority".cell().bold(true),
-                        "completion date".cell().bold(true),
-                        "creation date".cell().bold(true),
-                        "projects".cell().bold(true),
-                        "contexts".cell().bold(true),
-                        "content".cell().bold(true),
-                    ])
-                    .bold(true);
-                let _ = print_stdout(table);
+                presenter.pring_table();
             }
             _ => {
-                for (i, todo) in todo_list.iter().enumerate() {
-                    println!("{}: {}", i, todo.to_formatted_string());
-                }
+                presenter.print();
             }
         }
     }
