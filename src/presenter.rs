@@ -89,8 +89,11 @@ mod tests {
     mod to_table_format {
         #[test]
         fn to_table() {
-            let formatted_string = "todo text +projectA +projectB @contextA @contextB";
-            let todo = super::Todo::from_formatted_string(formatted_string, None);
+            let mut todo = super::Todo::empty();
+            todo.set_projects(Some(vec!["projectA".to_string(), "projectB".to_string()]));
+            todo.set_contexts(Some(vec!["contextA".to_string(), "contextB".to_string()]));
+            todo.set_content("todo text".to_string());
+
             let table_format: Vec<String> = vec![
                 "-".to_string(),
                 "-".to_string(),
