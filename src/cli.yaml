@@ -31,8 +31,6 @@ subcommands:
                 long: projects
                 about: Specify related project
                 takes_value: true
-                multiple_values: true
-                multiple_occurrences: true
             - contexts:
                 short: C
                 long: contexts

@@ -22,7 +22,7 @@ impl TodoService {
         let content: &str = matches.value_of(CONTENT).unwrap();
         let creation_date: String = get_today();
         let priority: Option<&str> = matches.value_of(PRIORITY);
-        let projects: Option<Vec<String>> = matches.values_of_t(PROJECTS).ok();
+        let projects: Option<String> = matches.value_of_t(PROJECTS).ok();
         let contexts: Option<Vec<String>> = matches.values_of_t(CONTEXTS).ok();
         let todo = Todo::new(content, Some(creation_date), priority, projects, contexts);
 
