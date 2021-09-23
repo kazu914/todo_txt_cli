@@ -1,9 +1,9 @@
 use super::constants::add_flags::*;
 use super::constants::done_flags::*;
 use super::constants::list_flags::*;
+use super::converter::Converter;
 use super::helper::{get_today, is_valid_date};
 use super::model::Todo;
-use super::parser::Parser;
 use super::presenter::Presenter;
 use super::repository::TodoFile;
 use clap::ArgMatches;
@@ -51,7 +51,7 @@ impl TodoService {
             );
             process::exit(1);
         }
-        let mut todo = Parser::perse_formatted_string(todo_string.unwrap(), Some(key));
+        let mut todo = Converter::from_formatted_string(todo_string.unwrap(), Some(key));
         todo.complete(completion_date.as_str());
         lines[key] = todo.to_formatted_string();
         self.file.overwrite(
@@ -69,7 +69,7 @@ impl TodoService {
         let todo_list: Vec<Todo> = todos
             .iter()
             .enumerate()
-            .map(|(index, todo)| Parser::perse_formatted_string(todo, Some(index)))
+            .map(|(index, todo)| Converter::from_formatted_string(todo, Some(index)))
             .collect();
         let presenter = Presenter::new(todo_list);
 

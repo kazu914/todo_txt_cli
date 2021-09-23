@@ -1,9 +1,9 @@
-pub struct Parser {}
+pub struct Converter {}
 use super::helper::{is_context, is_project, is_valid_date};
 use super::model::Todo;
 
-impl Parser {
-    pub fn perse_formatted_string(formatted_string: &str, key: Option<usize>) -> Todo {
+impl Converter {
+    pub fn from_formatted_string(formatted_string: &str, key: Option<usize>) -> Todo {
         let mut is_completed: bool = false;
         let mut priority: Option<String> = None;
         let mut completion_date: Option<String> = None;
@@ -75,14 +75,14 @@ mod from_formatted_string {
     #[test]
     fn from_flag() {
         let formatted_string = "x todo text";
-        let todo = super::Parser::perse_formatted_string(formatted_string, None);
+        let todo = super::Converter::from_formatted_string(formatted_string, None);
         assert!(todo.is_completed());
     }
 
     #[test]
     fn from_priority() {
         let formatted_string = "(A) todo text";
-        let todo = super::Parser::perse_formatted_string(formatted_string, None);
+        let todo = super::Converter::from_formatted_string(formatted_string, None);
         assert!(!todo.is_completed());
         assert_eq!(todo.priority(), &Some("A".to_string()));
         assert_eq!(todo.content(), &"todo text".to_string());
@@ -91,7 +91,7 @@ mod from_formatted_string {
     #[test]
     fn from_flag_priority() {
         let formatted_string = "x (A) todo text";
-        let todo = super::Parser::perse_formatted_string(formatted_string, None);
+        let todo = super::Converter::from_formatted_string(formatted_string, None);
         assert!(todo.is_completed());
         assert_eq!(todo.priority(), &Some("A".to_string()));
         assert_eq!(todo.content(), &"todo text".to_string());
@@ -100,7 +100,7 @@ mod from_formatted_string {
     #[test]
     fn from_priority_creation_date() {
         let formatted_string = "(A) 2000-1-1 todo text";
-        let todo = super::Parser::perse_formatted_string(formatted_string, None);
+        let todo = super::Converter::from_formatted_string(formatted_string, None);
         assert!(!todo.is_completed());
         assert_eq!(todo.priority(), &Some("A".to_string()));
         assert_eq!(todo.completion_date(), &None);
@@ -111,7 +111,7 @@ mod from_formatted_string {
     #[test]
     fn from_flag_priority_completion_date() {
         let formatted_string = "x (A) 2000-1-1 todo text";
-        let todo = super::Parser::perse_formatted_string(formatted_string, None);
+        let todo = super::Converter::from_formatted_string(formatted_string, None);
         assert!(todo.is_completed());
         assert_eq!(todo.priority(), &Some("A".to_string()));
         assert_eq!(todo.completion_date(), &Some("2000-1-1".to_string()));
@@ -122,7 +122,7 @@ mod from_formatted_string {
     #[test]
     fn from_flag_priority_completion_date_creation_date() {
         let formatted_string = "x (A) 2000-1-1 1999-12-31 todo text";
-        let todo = super::Parser::perse_formatted_string(formatted_string, None);
+        let todo = super::Converter::from_formatted_string(formatted_string, None);
         assert!(todo.is_completed());
         assert_eq!(todo.priority(), &Some("A".to_string()));
         assert_eq!(todo.completion_date(), &Some("2000-1-1".to_string()));
@@ -133,7 +133,7 @@ mod from_formatted_string {
     #[test]
     fn from_content_projects() {
         let formatted_string = "todo text +projectA +projectB";
-        let todo = super::Parser::perse_formatted_string(formatted_string, None);
+        let todo = super::Converter::from_formatted_string(formatted_string, None);
         assert!(!todo.is_completed());
         assert_eq!(todo.priority(), &None);
         assert_eq!(todo.completion_date(), &None);
@@ -148,7 +148,7 @@ mod from_formatted_string {
     #[test]
     fn from_content_contexts() {
         let formatted_string = "todo text @contextA @contextB";
-        let todo = super::Parser::perse_formatted_string(formatted_string, None);
+        let todo = super::Converter::from_formatted_string(formatted_string, None);
         assert!(!todo.is_completed());
         assert_eq!(todo.priority(), &None);
         assert_eq!(todo.completion_date(), &None);
@@ -163,7 +163,7 @@ mod from_formatted_string {
     #[test]
     fn from_content_projects_contexts() {
         let formatted_string = "todo text +projectA +projectB @contextA @contextB";
-        let todo = super::Parser::perse_formatted_string(formatted_string, None);
+        let todo = super::Converter::from_formatted_string(formatted_string, None);
         assert!(!todo.is_completed());
         assert_eq!(todo.priority(), &None);
         assert_eq!(todo.completion_date(), &None);
