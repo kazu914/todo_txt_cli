@@ -65,13 +65,13 @@ impl TodoService {
     }
 
     pub fn list_todos(&self, matches: &ArgMatches) {
-        let todos = self.file.read();
-        let todo_list: Vec<Todo> = todos
+        let todo_lines = self.file.read();
+        let todos: Vec<Todo> = todo_lines
             .iter()
             .enumerate()
             .map(|(index, todo)| Converter::from_formatted_string(todo, Some(index)))
             .collect();
-        let presenter = Presenter::new(todo_list);
+        let presenter = Presenter::new(todos);
 
         match matches.value_of(FORMAT).unwrap_or_default() {
             "table" => {
