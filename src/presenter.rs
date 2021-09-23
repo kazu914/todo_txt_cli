@@ -16,11 +16,8 @@ impl Presenter {
     }
 
     pub fn pring_table(&self) {
-        let table_formats: Vec<Vec<String>> = self
-            .todos
-            .iter()
-            .map(|todo| todo.to_table_format())
-            .collect();
+        let table_formats: Vec<Vec<String>> =
+            self.todos.iter().map(Presenter::to_table_format).collect();
 
         let table = table_formats
             .table()
@@ -36,5 +33,75 @@ impl Presenter {
             ])
             .bold(true);
         let _ = print_stdout(table);
+    }
+
+    fn to_table_format(todo: &Todo) -> Vec<String> {
+        let key = if todo.key().is_some() {
+            todo.key().unwrap().to_string()
+        } else {
+            "-".to_string()
+        };
+        let is_copleted_string = if *todo.is_completed() {
+            "x".to_string()
+        } else {
+            "-".to_string()
+        };
+
+        let priority_string = todo.priority().clone().unwrap_or_else(|| "-".to_string());
+        let completion_date_string = todo
+            .completion_date()
+            .clone()
+            .unwrap_or_else(|| "-".to_string());
+        let creation_date_string = todo
+            .creation_date()
+            .clone()
+            .unwrap_or_else(|| "-".to_string());
+
+        let projects_string = todo
+            .projects()
+            .clone()
+            .unwrap_or_else(|| vec!["-".to_string()])
+            .join(" ");
+        let contexts_string = todo
+            .contexts()
+            .clone()
+            .unwrap_or_else(|| vec!["-".to_string()])
+            .join(" ");
+
+        let content_string = todo.content().clone();
+
+        vec![
+            key,
+            is_copleted_string,
+            priority_string,
+            completion_date_string,
+            creation_date_string,
+            projects_string,
+            contexts_string,
+            content_string,
+        ]
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{Presenter, Todo};
+    mod to_table_format {
+        #[test]
+        fn to_table() {
+            let formatted_string = "todo text +projectA +projectB @contextA @contextB";
+            let todo = super::Todo::from_formatted_string(formatted_string, None);
+            let table_format: Vec<String> = vec![
+                "-".to_string(),
+                "-".to_string(),
+                "-".to_string(),
+                "-".to_string(),
+                "-".to_string(),
+                "projectA projectB".to_string(),
+                "contextA contextB".to_string(),
+                "todo text".to_string(),
+            ];
+            assert_eq!(super::Presenter::to_table_format(&todo), table_format);
+        }
     }
 }
