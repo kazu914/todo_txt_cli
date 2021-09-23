@@ -36,8 +36,6 @@ subcommands:
                 long: contexts
                 about: Specify related project
                 takes_value: true
-                multiple_values: true
-                multiple_occurrences: true
     - done:
         about: complete todo
         args:

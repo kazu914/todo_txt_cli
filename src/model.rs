@@ -17,7 +17,7 @@ impl Todo {
         creation_date: Option<impl Into<String>>,
         priority: Option<impl Into<String>>,
         projects: Option<impl Into<String>>,
-        contexts: Option<Vec<impl Into<String>>>,
+        contexts: Option<impl Into<String>>,
     ) -> Todo {
         let key: Option<usize> = None;
         let is_completed = false;
@@ -32,6 +32,13 @@ impl Todo {
                 .map(|project| project.to_string())
                 .collect()
         });
+        let contexts: Option<Vec<String>> = contexts.map(|contexts| {
+            contexts
+                .into()
+                .split(',')
+                .map(|context| context.to_string())
+                .collect()
+        });
         Todo {
             key,
             is_completed,
@@ -40,8 +47,7 @@ impl Todo {
             priority,
             creation_date,
             projects,
-            contexts: contexts
-                .map(|contexts| contexts.into_iter().map(|context| context.into()).collect()),
+            contexts,
         }
     }
 
@@ -213,7 +219,7 @@ mod tests {
             let creation_date: Option<&str> = None;
             let priority: Option<&str> = None;
             let projects: Option<String> = None;
-            let contexts: Option<Vec<String>> = None;
+            let contexts: Option<String> = None;
             let todo = super::Todo::new(content, creation_date, priority, projects, contexts);
             assert_eq!(todo.to_formatted_string(), "content")
         }
@@ -224,7 +230,7 @@ mod tests {
             let creation_date: Option<&str> = None;
             let priority: Option<&str> = Some("A");
             let projects: Option<String> = None;
-            let contexts: Option<Vec<String>> = None;
+            let contexts: Option<String> = None;
             let todo = super::Todo::new(content, creation_date, priority, projects, contexts);
             assert_eq!(todo.to_formatted_string(), "(A) content")
         }
@@ -235,7 +241,7 @@ mod tests {
             let creation_date: Option<&str> = Some("2000-1-1");
             let priority: Option<&str> = None;
             let projects: Option<String> = None;
-            let contexts: Option<Vec<String>> = None;
+            let contexts: Option<String> = None;
             let todo = super::Todo::new(content, creation_date, priority, projects, contexts);
             assert_eq!(todo.to_formatted_string(), "2000-1-1 content")
         }
@@ -246,7 +252,7 @@ mod tests {
             let creation_date: Option<&str> = Some("2000-1-1");
             let priority: Option<&str> = Some("A");
             let projects: Option<String> = None;
-            let contexts: Option<Vec<String>> = None;
+            let contexts: Option<String> = None;
             let todo = super::Todo::new(content, creation_date, priority, projects, contexts);
             assert_eq!(todo.to_formatted_string(), "(A) 2000-1-1 content")
         }
@@ -257,7 +263,7 @@ mod tests {
             let creation_date: Option<&str> = None;
             let priority: Option<&str> = None;
             let projects: Option<String> = Some("projectA,projectB".to_string());
-            let contexts: Option<Vec<String>> = None;
+            let contexts: Option<String> = None;
             let todo = super::Todo::new(content, creation_date, priority, projects, contexts);
             assert_eq!(todo.to_formatted_string(), "content +projectA +projectB")
         }
@@ -268,8 +274,7 @@ mod tests {
             let creation_date: Option<&str> = None;
             let priority: Option<&str> = None;
             let projects: Option<String> = None;
-            let contexts: Option<Vec<String>> =
-                Some(vec!["contextA".to_string(), "contextB".to_string()]);
+            let contexts: Option<String> = Some("contextA,contextB".to_string());
 
             let todo = super::Todo::new(content, creation_date, priority, projects, contexts);
             assert_eq!(todo.to_formatted_string(), "content @contextA @contextB")
@@ -281,8 +286,7 @@ mod tests {
             let creation_date: Option<&str> = None;
             let priority: Option<&str> = None;
             let projects: Option<String> = Some("projectA,projectB".to_string());
-            let contexts: Option<Vec<String>> =
-                Some(vec!["contextA".to_string(), "contextB".to_string()]);
+            let contexts: Option<String> = Some("contextA,contextB".to_string());
 
             let todo = super::Todo::new(content, creation_date, priority, projects, contexts);
             assert_eq!(
@@ -297,8 +301,7 @@ mod tests {
             let creation_date: Option<&str> = Some("2000-1-1");
             let priority: Option<&str> = Some("A");
             let projects: Option<String> = Some("projectA,projectB".to_string());
-            let contexts: Option<Vec<String>> =
-                Some(vec!["contextA".to_string(), "contextB".to_string()]);
+            let contexts: Option<String> = Some("contextA,contextB".to_string());
 
             let todo = super::Todo::new(content, creation_date, priority, projects, contexts);
             assert_eq!(
@@ -313,8 +316,7 @@ mod tests {
             let creation_date: Option<&str> = Some("2000-1-1");
             let priority: Option<&str> = Some("A");
             let projects: Option<String> = Some("projectA,projectB".to_string());
-            let contexts: Option<Vec<String>> =
-                Some(vec!["contextA".to_string(), "contextB".to_string()]);
+            let contexts: Option<String> = Some("contextA,contextB".to_string());
 
             let mut todo = super::Todo::new(content, creation_date, priority, projects, contexts);
             todo.complete("2000-1-2");
@@ -333,7 +335,7 @@ mod tests {
             let creation_date: Option<&str> = None;
             let priority: Option<&str> = None;
             let projects: Option<String> = None;
-            let contexts: Option<Vec<String>> = None;
+            let contexts: Option<String> = None;
             let mut todo = super::Todo::new(content, creation_date, priority, projects, contexts);
             todo.complete("2000-1-2");
             assert!(todo.is_completed);
