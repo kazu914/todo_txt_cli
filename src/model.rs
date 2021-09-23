@@ -208,6 +208,33 @@ impl Todo {
     }
 }
 
+impl Todo {
+    pub fn key(&self) -> &Option<usize> {
+        &self.key
+    }
+    pub fn is_completed(&self) -> &bool {
+        &self.is_completed
+    }
+    pub fn priority(&self) -> &Option<String> {
+        &self.priority
+    }
+    pub fn completion_date(&self) -> &Option<String> {
+        &self.completion_date
+    }
+    pub fn creation_date(&self) -> &Option<String> {
+        &self.creation_date
+    }
+    pub fn projects(&self) -> &Option<Vec<String>> {
+        &self.projects
+    }
+    pub fn contexts(&self) -> &Option<Vec<String>> {
+        &self.contexts
+    }
+    pub fn content(&self) -> &String {
+        &self.content
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::Todo;
