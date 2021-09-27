@@ -9,8 +9,8 @@ mod integrate_test {
     #[test]
     fn add() -> Result<(), Box<dyn std::error::Error>> {
         let mut file = NamedTempFile::new()?;
-        let mut cmd = Command::cargo_bin("todo_txt")?;
-        cmd.arg("-f")
+        let res = Command::cargo_bin("todo_txt")?
+            .arg("-f")
             .arg(file.path())
             .arg("add")
             .arg("-p")
@@ -19,8 +19,9 @@ mod integrate_test {
             .arg("projectA,projectB")
             .arg("-C")
             .arg("contextA,contextB")
-            .arg("todo text");
-        cmd.assert().success();
+            .arg("todo text")
+            .assert();
+        res.success();
 
         let today = helper::get_today();
         let expected = format!(
