@@ -34,4 +34,37 @@ mod integrate_test {
         assert_eq!(buf, expected);
         Ok(())
     }
+
+    #[test]
+    fn done() -> Result<(), Box<dyn std::error::Error>> {
+        let (_, path) = NamedTempFile::new()?.keep()?;
+        let _ = Command::cargo_bin("todo_txt")?
+            .arg("-f")
+            .arg(&path)
+            .arg("add")
+            .arg("-p")
+            .arg("A")
+            .arg("-P")
+            .arg("project")
+            .arg("-C")
+            .arg("context")
+            .arg("todo text")
+            .ok();
+
+        let res = Command::cargo_bin("todo_txt")?
+            .arg("-f")
+            .arg(&path)
+            .arg("done")
+            .arg("0")
+            .assert();
+        res.success();
+
+        let today = helper::get_today();
+        let expected = format!("x (A) {} {} todo text +project @context\n", today, today);
+
+        let buf = std::fs::read_to_string(&path)?;
+        assert_eq!(buf, expected);
+        std::fs::remove_file(&path)?;
+        Ok(())
+    }
 }
