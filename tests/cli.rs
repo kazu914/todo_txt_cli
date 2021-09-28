@@ -67,4 +67,54 @@ mod integrate_test {
         std::fs::remove_file(&path)?;
         Ok(())
     }
+
+    #[test]
+    fn list() -> Result<(), Box<dyn std::error::Error>> {
+        let file = NamedTempFile::new()?;
+        let _ = Command::cargo_bin("todo_txt")?
+            .arg("-f")
+            .arg(file.path())
+            .arg("add")
+            .arg("-p")
+            .arg("A")
+            .arg("-P")
+            .arg("project")
+            .arg("-C")
+            .arg("context")
+            .arg("todo text")
+            .ok();
+
+        let _ = Command::cargo_bin("todo_txt")?
+            .arg("-f")
+            .arg(file.path())
+            .arg("add")
+            .arg("-p")
+            .arg("B")
+            .arg("-C")
+            .arg("contextB")
+            .arg("second todo")
+            .ok();
+
+        let _ = Command::cargo_bin("todo_txt")?
+            .arg("-f")
+            .arg(file.path())
+            .arg("done")
+            .arg("1")
+            .ok();
+
+        let res = Command::cargo_bin("todo_txt")?
+            .arg("-f")
+            .arg(file.path())
+            .arg("list")
+            .assert();
+
+        let today = helper::get_today();
+        let expected = format!(
+            "0: (A) {} todo text +project @context\n1: x (B) {} {} second todo @contextB\n",
+            today, today, today
+        );
+        res.stdout(expected).success();
+
+        Ok(())
+    }
 }
