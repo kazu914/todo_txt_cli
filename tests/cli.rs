@@ -4,6 +4,7 @@ mod integrate_test {
     use std::io::Read;
     use std::process::Command;
     use tempfile::NamedTempFile;
+    use test_case::test_case;
     use todo_txt::helper;
 
     #[test]
@@ -32,6 +33,25 @@ mod integrate_test {
         let mut buf = String::new();
         file.read_to_string(&mut buf)?;
         assert_eq!(buf, expected);
+        Ok(())
+    }
+
+    #[test_case("projectA projectB", "contextA")]
+    #[test_case("projectA", "contextA contextB")]
+    #[test_case("projectA projectB", "contextA contextB")]
+    fn failed_to_add(projects: &str, contexts: &str) -> Result<(), Box<dyn std::error::Error>> {
+        let file = NamedTempFile::new()?;
+        let res = Command::cargo_bin("todo_txt")?
+            .arg("-f")
+            .arg(file.path())
+            .arg("add")
+            .arg("-P")
+            .arg(projects)
+            .arg("-C")
+            .arg(contexts)
+            .arg("todo text")
+            .assert();
+        res.failure();
         Ok(())
     }
 

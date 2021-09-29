@@ -24,15 +24,29 @@ impl Todo {
         let priority = priority.map(Into::into);
         let creation_date = creation_date.map(Into::into);
         let projects: Option<Vec<String>> = projects.map(|projects| {
+            let projects: String = projects.into();
+            if projects.contains(char::is_whitespace) {
+                println!(
+                    "Couldn't create todo: 'projects' should NOT contain whitespaces. You can use comma as dilimiter to specify multiple projects.\nYour input: '{}'",
+                    projects
+                );
+                std::process::exit(1);
+            }
             projects
-                .into()
                 .split(',')
                 .map(|project| project.to_string())
                 .collect()
         });
         let contexts: Option<Vec<String>> = contexts.map(|contexts| {
+            let contexts: String = contexts.into();
+            if contexts.contains(char::is_whitespace) {
+                println!(
+                    "Couldn't create todo: 'contexts' should NOT contain whitespaces. You can use comma as dilimiter to specify multiple projects.\nYour input: '{}'",
+                    contexts
+                );
+                std::process::exit(1);
+            }
             contexts
-                .into()
                 .split(',')
                 .map(|context| context.to_string())
                 .collect()
