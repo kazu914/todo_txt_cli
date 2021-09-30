@@ -69,6 +69,48 @@ impl Converter {
         todo.set_contexts(contexts);
         todo
     }
+
+    pub fn from_argments(
+        content: impl Into<String>,
+        creation_date: Option<impl Into<String>>,
+        priority: Option<impl Into<String>>,
+        projects: Option<impl Into<String>>,
+        contexts: Option<impl Into<String>>,
+    ) -> Todo {
+        let content = content.into();
+        let priority = priority.map(Into::into);
+        let creation_date = creation_date.map(Into::into);
+        let projects: Option<Vec<String>> = projects.map(|projects| {
+            let projects: String = projects.into();
+            if projects.contains(char::is_whitespace) {
+                println!(
+                    "Couldn't create todo: 'projects' should NOT contain whitespaces. You can use comma as dilimiter to specify multiple projects.\nYour input: '{}'",
+                    projects
+                );
+                std::process::exit(1);
+            }
+            projects
+                .split(',')
+                .map(|project| project.to_string())
+                .collect()
+        });
+        let contexts: Option<Vec<String>> = contexts.map(|contexts| {
+            let contexts: String = contexts.into();
+            if contexts.contains(char::is_whitespace) {
+                println!(
+                    "Couldn't create todo: 'contexts' should NOT contain whitespaces. You can use comma as dilimiter to specify multiple projects.\nYour input: '{}'",
+                    contexts
+                );
+                std::process::exit(1);
+            }
+            contexts
+                .split(',')
+                .map(|context| context.to_string())
+                .collect()
+        });
+        Todo::new(content, creation_date, priority, projects, contexts)
+    }
+
     pub fn to_formatted_string(todo: &Todo) -> String {
         let mut res: String = "".to_string();
 
@@ -107,7 +149,7 @@ impl Converter {
 }
 #[cfg(test)]
 mod tests {
-    use super::{Converter, Todo};
+    use super::Converter;
     use test_case::test_case;
 
     #[test_case("content", None, None, None, None, None, "content")]
@@ -166,7 +208,8 @@ mod tests {
         completion_date: Option<&str>,
         res: &str,
     ) {
-        let mut todo = super::Todo::new(content, creation_date, priority, projects, contexts);
+        let mut todo =
+            super::Converter::from_argments(content, creation_date, priority, projects, contexts);
         if let Some(completion_date) = completion_date {
             todo.complete(completion_date.to_string());
         }

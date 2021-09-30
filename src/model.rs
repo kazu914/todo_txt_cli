@@ -11,46 +11,15 @@ pub struct Todo {
 
 impl Todo {
     pub fn new(
-        content: impl Into<String>,
-        creation_date: Option<impl Into<String>>,
-        priority: Option<impl Into<String>>,
-        projects: Option<impl Into<String>>,
-        contexts: Option<impl Into<String>>,
+        content: String,
+        creation_date: Option<String>,
+        priority: Option<String>,
+        projects: Option<Vec<String>>,
+        contexts: Option<Vec<String>>,
     ) -> Todo {
         let key: Option<usize> = None;
         let is_completed = false;
         let completion_date: Option<String> = None;
-        let content = content.into();
-        let priority = priority.map(Into::into);
-        let creation_date = creation_date.map(Into::into);
-        let projects: Option<Vec<String>> = projects.map(|projects| {
-            let projects: String = projects.into();
-            if projects.contains(char::is_whitespace) {
-                println!(
-                    "Couldn't create todo: 'projects' should NOT contain whitespaces. You can use comma as dilimiter to specify multiple projects.\nYour input: '{}'",
-                    projects
-                );
-                std::process::exit(1);
-            }
-            projects
-                .split(',')
-                .map(|project| project.to_string())
-                .collect()
-        });
-        let contexts: Option<Vec<String>> = contexts.map(|contexts| {
-            let contexts: String = contexts.into();
-            if contexts.contains(char::is_whitespace) {
-                println!(
-                    "Couldn't create todo: 'contexts' should NOT contain whitespaces. You can use comma as dilimiter to specify multiple projects.\nYour input: '{}'",
-                    contexts
-                );
-                std::process::exit(1);
-            }
-            contexts
-                .split(',')
-                .map(|context| context.to_string())
-                .collect()
-        });
         Todo {
             key,
             is_completed,
@@ -135,14 +104,15 @@ impl Todo {
 #[cfg(test)]
 mod tests {
     use super::Todo;
+
     mod complete {
         #[test]
         fn complete() {
-            let content: &str = "content";
-            let creation_date: Option<&str> = None;
-            let priority: Option<&str> = None;
-            let projects: Option<String> = None;
-            let contexts: Option<String> = None;
+            let content: String = "content".to_string();
+            let creation_date: Option<String> = None;
+            let priority: Option<String> = None;
+            let projects: Option<Vec<String>> = None;
+            let contexts: Option<Vec<String>> = None;
             let mut todo = super::Todo::new(content, creation_date, priority, projects, contexts);
             todo.complete("2000-1-2");
             assert!(todo.is_completed);
