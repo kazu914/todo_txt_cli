@@ -26,7 +26,11 @@ impl TodoService {
         let projects: Option<String> = matches.value_of_t(PROJECTS).ok();
         let contexts: Option<String> = matches.value_of_t(CONTEXTS).ok();
         let todo =
-            Converter::from_argments(content, Some(creation_date), priority, projects, contexts);
+            Converter::from_argments(content, Some(creation_date), priority, projects, contexts)
+                .unwrap_or_else(|e| {
+                    eprintln!("{}", e);
+                    process::exit(1);
+                });
 
         let todo_string = Converter::to_formatted_string(&todo);
         let _ = self.file.append(&todo_string);
