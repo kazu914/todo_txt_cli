@@ -23,7 +23,10 @@ pub fn is_context(target: &str) -> bool {
 
 pub fn try_split_with_comma(targets: Option<impl Into<String>>) -> Result<Option<Vec<String>>> {
     if let Some(targets) = targets {
-        let targets: String = targets.into();
+        let targets: String = targets.into().trim().to_string();
+        if targets.is_empty() {
+            return Ok(None);
+        }
         ensure!(!targets.contains(char::is_whitespace));
         let res = targets
             .split(',')
@@ -113,6 +116,20 @@ mod tests {
             let targets: Option<String> = Some("projectA,projectB".to_string());
             let res = super::try_split_with_comma(targets);
             assert_eq!(res.unwrap().unwrap(), vec!["projectA", "projectB"])
+        }
+
+        #[test]
+        fn empty_string() {
+            let targets: Option<String> = Some("".to_string());
+            let res = super::try_split_with_comma(targets);
+            assert!(res.unwrap().is_none())
+        }
+
+        #[test]
+        fn space_string() {
+            let targets: Option<String> = Some(" ".to_string());
+            let res = super::try_split_with_comma(targets);
+            assert!(res.unwrap().is_none())
         }
 
         #[test]
