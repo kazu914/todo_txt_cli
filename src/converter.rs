@@ -1,6 +1,14 @@
 pub struct Converter {}
-use super::helper::{is_context, is_project, is_valid_date};
+use super::helper::{is_context, is_project, is_valid_date, try_split_with_comma};
 use super::model::Todo;
+use anyhow::Result;
+use thiserror::Error;
+
+#[derive(Debug, Error)]
+enum ConverterError {
+    #[error("Couldn't create todo: '{}' should NOT contain whitespaces. You can use comma as dilimiter to specify multiple {0}.")]
+    ContainWhiteSpacesError(String),
+}
 
 impl Converter {
     pub fn from_formatted_string(formatted_string: &str, key: Option<usize>) -> Todo {
@@ -76,39 +84,21 @@ impl Converter {
         priority: Option<impl Into<String>>,
         projects: Option<impl Into<String>>,
         contexts: Option<impl Into<String>>,
-    ) -> Todo {
+    ) -> Result<Todo> {
         let content = content.into();
         let priority = priority.map(Into::into);
         let creation_date = creation_date.map(Into::into);
-        let projects: Option<Vec<String>> = projects.map(|projects| {
-            let projects: String = projects.into();
-            if projects.contains(char::is_whitespace) {
-                println!(
-                    "Couldn't create todo: 'projects' should NOT contain whitespaces. You can use comma as dilimiter to specify multiple projects.\nYour input: '{}'",
-                    projects
-                );
-                std::process::exit(1);
-            }
-            projects
-                .split(',')
-                .map(|project| project.to_string())
-                .collect()
-        });
-        let contexts: Option<Vec<String>> = contexts.map(|contexts| {
-            let contexts: String = contexts.into();
-            if contexts.contains(char::is_whitespace) {
-                println!(
-                    "Couldn't create todo: 'contexts' should NOT contain whitespaces. You can use comma as dilimiter to specify multiple projects.\nYour input: '{}'",
-                    contexts
-                );
-                std::process::exit(1);
-            }
-            contexts
-                .split(',')
-                .map(|context| context.to_string())
-                .collect()
-        });
-        Todo::new(content, creation_date, priority, projects, contexts)
+        let projects: Option<Vec<String>> = try_split_with_comma(projects)
+            .map_err(|_| ConverterError::ContainWhiteSpacesError("projects".to_string()))?;
+        let contexts: Option<Vec<String>> = try_split_with_comma(contexts)
+            .map_err(|_| ConverterError::ContainWhiteSpacesError("contexts".to_string()))?;
+        Ok(Todo::new(
+            content,
+            creation_date,
+            priority,
+            projects,
+            contexts,
+        ))
     }
 
     pub fn to_formatted_string(todo: &Todo) -> String {
@@ -209,7 +199,8 @@ mod tests {
         res: &str,
     ) {
         let mut todo =
-            super::Converter::from_argments(content, creation_date, priority, projects, contexts);
+            super::Converter::from_argments(content, creation_date, priority, projects, contexts)
+                .unwrap();
         if let Some(completion_date) = completion_date {
             todo.complete(completion_date.to_string());
         }
