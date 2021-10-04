@@ -58,6 +58,27 @@ impl TodoService {
         Converter::to_formatted_string(&todo)
     }
 
+    pub fn delete_todo(&self, matches: &ArgMatches) {
+        let key: usize = matches.value_of_t(KEY).unwrap_or_else(|_| {
+            println!("Error: Key should be integer");
+            process::exit(1);
+        });
+        let mut lines = self.file.read();
+        let todo_string = lines.get(key);
+        if todo_string.is_none() {
+            println!("Error: Couldn't find todo with key: {}", key);
+            process::exit(1);
+        }
+        lines.remove(key);
+        self.file.overwrite(
+            lines
+                .iter()
+                .map(AsRef::as_ref)
+                .collect::<Vec<&str>>()
+                .as_ref(),
+        );
+    }
+
     pub fn list_todos(&self, matches: &ArgMatches) {
         let todo_lines = self.file.read();
         let todos: Vec<Todo> = todo_lines
