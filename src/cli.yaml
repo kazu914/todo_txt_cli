@@ -1,0 +1,63 @@
+name: todo_txt
+version: "0.1"
+author: Kazuaki Nomura <nkz0914ssk@gmail.com>
+about: cli tool to manage todo.txt
+args:
+    - file:
+       short: f
+       long: file
+       value_name: FILE
+       about: Specify the todo.txt file path
+       takes_value: true
+subcommands:
+    - add:
+        about: add todo
+        args:
+            - content:
+                index: 1
+                value_name: TODO
+                required: true
+                about: "What you have to do"
+            - priority:
+                short: p
+                long: priority
+                about: Specify the priority
+                takes_value: true
+                validator_regex:
+                  - ^[A-Z]$
+                  - Priority must be between A(high) and Z(low)
+            - projects:
+                short: P
+                long: projects
+                about: Specify related project
+                takes_value: true
+            - contexts:
+                short: C
+                long: contexts
+                about: Specify related project
+                takes_value: true
+    - done:
+        about: complete todo
+        args:
+            - key:
+                index: 1
+                value_name: ITEM_KEY
+                required: true
+                about: "the todo key to complete"
+            - date:
+                long: date
+                about: Specify the completion date
+                takes_value: true
+    - list:
+        about: list todos
+        args:
+            - format:
+                long: format
+                about: Specify output format
+                takes_value: true
+                possible_values:
+                    - default
+                    - table
+                default_value: default
+    - show_config:
+        about: "[experimental] show config"
