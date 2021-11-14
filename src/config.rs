@@ -5,7 +5,7 @@ use std::{fmt, fs, fs::OpenOptions, io::BufReader, io::Error, process};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Config {
-    pub default_file_name: String,
+    pub default_todo_file_path: String,
 }
 
 impl Config {
@@ -13,7 +13,7 @@ impl Config {
         let project_dirs = ProjectDirs::from("", "", "todo_txt").unwrap();
         let _ = fs::create_dir_all(project_dirs.config_dir());
         Config::read_config(&project_dirs).unwrap_or(Config {
-            default_file_name: project_dirs
+            default_todo_file_path: project_dirs
                 .config_dir()
                 .join("todo.txt")
                 .into_os_string()
@@ -34,7 +34,7 @@ impl Config {
             println!("  {}", e);
             process::exit(1)
         });
-        config.default_file_name = shellexpand::full(&config.default_file_name)
+        config.default_todo_file_path = shellexpand::full(&config.default_todo_file_path)
             .unwrap_or_else(|e| {
                 println!("Error: {:?} is not valid config json file.", config_path);
                 println!("  {}", e);
@@ -47,7 +47,7 @@ impl Config {
 
 impl fmt::Display for Config {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "default_file_name: {}", self.default_file_name)
+        write!(f, "default_file_name: {}", self.default_todo_file_path)
     }
 }
 
