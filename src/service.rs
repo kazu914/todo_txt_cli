@@ -42,12 +42,7 @@ impl TodoService {
             println!("Error: Key should be integer");
             process::exit(1);
         });
-        let mut lines = self.file.read();
-        let todo_string = lines.get(key);
-        if todo_string.is_none() {
-            println!("Error: Couldn't find todo with key: {}", key);
-            process::exit(1);
-        }
+        let todo_string = self.file.get_todo_with_key(key);
         let completion_date: String = matches.value_of_t(DATE).unwrap_or_else(|_| get_today());
         if !is_valid_date(&completion_date) {
             println!(
@@ -56,16 +51,10 @@ impl TodoService {
             );
             process::exit(1);
         }
-        let mut todo = Converter::from_formatted_string(todo_string.unwrap(), Some(key));
+        let mut todo = Converter::from_formatted_string(&todo_string, Some(key));
         todo.complete(completion_date.as_str());
-        lines[key] = Converter::to_formatted_string(&todo);
-        self.file.overwrite(
-            lines
-                .iter()
-                .map(AsRef::as_ref)
-                .collect::<Vec<&str>>()
-                .as_ref(),
-        );
+        self.file
+            .update_todo(key, &Converter::to_formatted_string(&todo));
         Converter::to_formatted_string(&todo)
     }
 
