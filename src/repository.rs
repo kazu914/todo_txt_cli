@@ -44,11 +44,34 @@ impl TodoFile {
             .collect()
     }
 
-    pub fn overwrite(&self, contents: &[&str]) {
+    fn overwrite(&self, contents: &[&str]) {
         let _ = remove_file(&self.path);
         for content in contents {
             self.append(content);
         }
+    }
+
+    pub fn get_todo_with_key(&self, key: usize) -> String {
+        let lines = self.read();
+        let todo_string = lines.get(key);
+        if todo_string.is_none() {
+            println!("Error: Couldn't find todo with key: {}", key);
+            process::exit(1);
+        } else {
+            return todo_string.unwrap().to_string();
+        }
+    }
+
+    pub fn update_todo(&self, key: usize, content: &str) {
+        let mut lines = self.read();
+        lines[key] = content.to_string();
+        self.overwrite(
+            lines
+                .iter()
+                .map(AsRef::as_ref)
+                .collect::<Vec<&str>>()
+                .as_ref(),
+        );
     }
 }
 
