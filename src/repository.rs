@@ -50,6 +50,17 @@ impl TodoFile {
             self.append(content);
         }
     }
+
+    pub fn get_todo_with_key(&self, key: usize) -> String {
+        let lines = self.read();
+        let todo_string = lines.get(key);
+        if todo_string.is_none() {
+            println!("Error: Couldn't find todo with key: {}", key);
+            process::exit(1);
+        } else {
+            return todo_string.unwrap().to_string();
+        }
+    }
 }
 
 #[cfg(test)]
