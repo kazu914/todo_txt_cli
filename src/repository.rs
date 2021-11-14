@@ -61,6 +61,18 @@ impl TodoFile {
             return todo_string.unwrap().to_string();
         }
     }
+
+    pub fn update_todo(&self, key: usize, content: &str) {
+        let mut lines = self.read();
+        lines[key] = content.to_string();
+        self.overwrite(
+            lines
+                .iter()
+                .map(AsRef::as_ref)
+                .collect::<Vec<&str>>()
+                .as_ref(),
+        );
+    }
 }
 
 #[cfg(test)]
