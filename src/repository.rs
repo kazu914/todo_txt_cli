@@ -73,6 +73,24 @@ impl TodoFile {
                 .as_ref(),
         );
     }
+
+    pub fn remove(&self, key: usize) {
+        let mut lines = self.read();
+        lines.remove(key);
+        self.overwrite(
+            lines
+                .iter()
+                .map(AsRef::as_ref)
+                .collect::<Vec<&str>>()
+                .as_ref(),
+        );
+    }
+
+    pub fn check_if_exist(&self, key: usize) -> bool {
+        let lines = self.read();
+        let todo_string = lines.get(key);
+        todo_string.is_none()
+    }
 }
 
 #[cfg(test)]
