@@ -44,7 +44,7 @@ impl TodoFile {
             .collect()
     }
 
-    pub fn overwrite(&self, contents: &[&str]) {
+    fn overwrite(&self, contents: &[&str]) {
         let _ = remove_file(&self.path);
         for content in contents {
             self.append(content);
