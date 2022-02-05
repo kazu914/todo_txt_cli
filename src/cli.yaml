@@ -59,5 +59,11 @@ subcommands:
                     - default
                     - table
                 default_value: default
+            - all:
+                long: all
+                short: a
+                about: Show all todos include completed ones
+                required: false
+                takes_value: false
     - show_config:
         about: "[experimental] show config"

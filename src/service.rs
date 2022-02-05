@@ -2,6 +2,7 @@ use super::constants::add_flags::*;
 use super::constants::done_flags::*;
 use super::constants::list_flags::*;
 use super::converter::Converter;
+use super::filter::filter;
 use super::helper::{get_today, is_valid_date};
 use super::model::Todo;
 use super::presenter::Presenter;
@@ -65,7 +66,7 @@ impl TodoService {
             .enumerate()
             .map(|(index, todo)| Converter::from_formatted_string(todo, Some(index)))
             .collect();
-        let presenter = Presenter::new(todos);
+        let presenter = Presenter::new(filter(todos, matches.is_present(ALL)));
 
         match matches.value_of(FORMAT).unwrap_or_default() {
             "table" => {
