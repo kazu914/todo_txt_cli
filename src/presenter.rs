@@ -11,8 +11,12 @@ impl Presenter {
     }
 
     pub fn print(&self) {
-        for (i, todo) in self.todos.iter().enumerate() {
-            println!("{}: {}", i, Converter::to_formatted_string(todo));
+        for (_, todo) in self.todos.iter().enumerate() {
+            println!(
+                "{}: {}",
+                todo.key().unwrap(),
+                Converter::to_formatted_string(todo)
+            );
         }
     }
 
